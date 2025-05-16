@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UX Library v1.0</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Montserrat:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1><a href="https://discord.gg/AmBBE4PT8u"><img src="https://i.ibb.co/n2xbvwb/UXLibrary-cropped.jpg" alt="Udiscord" width="70" height="70" style="vertical-align: middle;"></a> UX Library</h1>
+    <nav>
+      <button data-tab="home" class="active">Home</button>
+      <button data-tab="catalog">Games</button>
+      <button data-tab="software">Software</button>
+      <a href="https://discord.gg/AmBBE4PT8u" target="_blank">Discord</a>
+    </nav>
+  </header>
+  <div class="container">
+    <main>
+      <section id="home" class="section active">
+        <h1>Welcome to UX Library!</h1>
+        <hr><br> > This site is run by 2 people so dont expect daily updates!
+        <br> > So we would love it if you joined the discord server! 
+        <br><br> > Join the Discord server to request a game / software to be added! 
+        <br><br> > All of the content here has been gotten from good sources so don't worry about getting infected! 
+        <br> > If there is an option to download a specific content using torrent we suggest you to do so as its the fastest way to do so on this site.
+        <br> <br>
+        <img src="https://i.ibb.co/rDFTczW/b2b-692540511.png" alt="Hustler" width="100" height="100">
+        <br> > Uneccessary Fact: <br>- The icon of the our discord server and our website is the car from the Xpand Rally game boxart.
+
+      </section>
+      <section id="catalog" class="section">
+        <div class="catalog">
+          <aside>
+            <h3>Categories</h3>
+            <hr>
+            <br>
+            <label><input type="checkbox" value="racing" checked> Racing</label>
+            <label><input type="checkbox" value="shooter" checked> Shooter</label>
+            <label><input type="checkbox" value="action" checked> Action</label>
+            <label><input type="checkbox" value="adventure" checked> Adventure</label>
+            <label><input type="checkbox" value="simulator" checked> Simulator</label>
+            <label><input type="checkbox" value="puzzle" checked> Puzzle</label>
+            <label><input type="checkbox" value="rpg" checked> RPG</label>
+            <label><input type="checkbox" value="horror" checked> Horror</label>
+            <label><input type="checkbox" value="strategy" checked> Strategy</label>
+            <label><input type="checkbox" value="survival" checked> Survival</label>
+            <label><input type="checkbox" value="sandbox" checked> Sandbox</label>
+            <label><input type="checkbox" value="platformer" checked> Platformer</label>
+            <label><input type="checkbox" value="roleplay" checked> Roleplay</label>
+          </aside>
+          <div class="content">
+            <div class="search-box"><input id="search-games" placeholder="Search games..."></div>
+            <div class="game-list"></div>
+          </div>
+        </div>
+      </section>
+      <section id="software" class="section">
+        <div class="software-section">
+          <aside>
+            <h3>Categories</h3>
+                        <hr>
+                        <br>
+            <label><input type="checkbox" value="videoediting" checked> Video Editing</label>
+            <label><input type="checkbox" value="photoediting" checked> Photo Editing</label>
+            <label><input type="checkbox" value="audioediting" checked> Audio Editing</label>
+            <label><input type="checkbox" value="windows" checked> Windows</label>
+            <label><input type="checkbox" value="other" checked> Other</label>
+          </aside>
+          <div class="content">
+            <div class="search-box"><input id="search-software" placeholder="Search software..."></div>
+            <div class="software-list"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div id="modalBanner" class="modal-banner"></div>
+      <span class="close" id="modalClose">×</span>
+      <div class="modal-body">
+        <h2 id="mTitle"></h2>
+        <p id="mDescription"></p>
+        <h3>Minimum Specs</h3>
+        <ul id="mSpecs"></ul>
+        <h3>How to Download</h3>
+        <ol id="mHowTo"></ol>
+        <h3>Download</h3>
+        <div id="mLinksContainer"></div>
+        <h3>Torrents</h3>
+        <div id="mTorrentsContainer"></div>
+        <script>
+        // <h3 style="margin-top:1rem;"><br></h3> add this back if you want to add text above the vid or smt
+      </script>
+        <iframe id="mVideo" src="" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function renderList(list, data, searchSelector, filterCats, isGame) {
+      list.innerHTML = '';
+      const q = document.querySelector(searchSelector).value.toLowerCase();
+      data.filter(item => {
+        const matchCats = filterCats.length === 0
+          || item.categories?.some(c => filterCats.includes(c));
+        return matchCats && item.name.toLowerCase().includes(q);
+      }).forEach(item => {
+        const div = document.createElement('div');
+        div.className = isGame ? 'game-item' : 'software-item';
+        div.innerHTML = `
+          <img src="${item.img}" alt="${item.name}">
+          <div class="title">${item.name}</div>
+        `;
+        div.onclick = () => openModal(item);
+        list.append(div);
+      });
+    }
+  
+    // Tab navigation
+    document.querySelectorAll('nav button').forEach(btn =>
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.section').forEach(s =>
+          s.classList.toggle('active', s.id === btn.dataset.tab)
+        );
+      })
+    );
+  
+    // Modal open/close
+    const modal = document.getElementById('modal');
+    document.getElementById('modalClose').onclick = () => modal.classList.remove('show');
+    modal.onclick = e => e.target === modal && modal.classList.remove('show');
+  
+    function openModal(item) {
+      // Banner / title / description / specs / how-to
+      document.getElementById('modalBanner').style.backgroundImage = `url(${item.img})`;
+      document.getElementById('mTitle').textContent = item.name;
+      document.getElementById('mDescription').textContent = item.description || '';
+      document.getElementById('mSpecs').innerHTML =
+        (item.specs || []).map(s => `<li>${s}</li>`).join('');
+      document.getElementById('mHowTo').innerHTML =
+        (item.howTo || []).map(step => `<li>${step}</li>`).join('');
+  
+      // ----- HTTP Download Links -----
+      const dlContainer = document.getElementById('mLinksContainer');
+      dlContainer.innerHTML = '';
+      (Array.isArray(item.download) ? item.download : [item.download] || [])
+        .filter(url => url)
+        .forEach((url, i, arr) => {
+          const a = document.createElement('a');
+          a.className = 'download-btn';
+          a.textContent = arr.length > 1 ? `Download Part ${i + 1}` : 'Download';
+          a.href = url;
+          a.style.margin = '0.2em';
+          a.addEventListener('click', e => {
+            e.stopPropagation();
+            window.open(url, '_blank');
+          });
+          dlContainer.append(a);
+        });
+  
+      // ----- Torrent / Magnet Links -----
+      const tContainer = document.getElementById('mTorrentsContainer');
+      tContainer.innerHTML = '';
+      (Array.isArray(item.torrents) ? item.torrents : [])
+        .filter(mag => mag && mag.startsWith('magnet:'))
+        .forEach((mag, i, arr) => {
+          const btn = document.createElement('a');
+          btn.className = 'download-btn';
+          btn.textContent = arr.length > 1 ? `Magnet ${i + 1}` : 'Magnet';
+          btn.href = mag;
+          btn.style.margin = '0.2em';
+          btn.addEventListener('click', e => {
+            e.stopPropagation();
+            window.open(mag, '_blank');
+          });
+          tContainer.append(btn);
+        });
+  
+      // Video embed
+      document.getElementById('mVideo').src = item.video || '';
+  
+      // Show modal
+      modal.classList.add('show');
+    }
+  
+    // Initial render hooks
+    document.querySelectorAll('#catalog aside input').forEach(el => el.addEventListener('input', renderGames));
+    document.getElementById('search-games').addEventListener('input', renderGames);
+    renderGames();
+  </script>
+  
+  
+  
+  <script src="games.js"></script>
+  <script src="software.js"></script>
+</body>
+</html>
