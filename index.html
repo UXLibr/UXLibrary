@@ -137,58 +137,58 @@
     document.getElementById('modalClose').onclick = () => modal.classList.remove('show');
     modal.onclick = e => e.target === modal && modal.classList.remove('show');
   
-    function openModal(item) {
-      // Banner / title / description / specs / how-to
-      document.getElementById('modalBanner').style.backgroundImage = `url(${item.img})`;
-      document.getElementById('mTitle').textContent = item.name;
-      document.getElementById('mDescription').textContent = item.description || '';
-      document.getElementById('mSpecs').innerHTML =
-        (item.specs || []).map(s => `<li>${s}</li>`).join('');
-      document.getElementById('mHowTo').innerHTML =
-        (item.howTo || []).map(step => `<li>${step}</li>`).join('');
-  
-      // ----- HTTP Download Links -----
-      const dlContainer = document.getElementById('mLinksContainer');
-      dlContainer.innerHTML = '';
-      (Array.isArray(item.download) ? item.download : [item.download] || [])
-        .filter(url => url)
-        .forEach((url, i, arr) => {
-          const a = document.createElement('a');
-          a.className = 'download-btn';
-          a.textContent = arr.length > 1 ? `Download Part ${i + 1}` : 'Download';
-          a.href = url;
-          a.style.margin = '0.2em';
-          a.addEventListener('click', e => {
-            e.stopPropagation();
-            window.open(url, '_blank');
-          });
-          dlContainer.append(a);
-        });
-  
-      // ----- Torrent / Magnet Links -----
-      const tContainer = document.getElementById('mTorrentsContainer');
-      tContainer.innerHTML = '';
-      (Array.isArray(item.torrents) ? item.torrents : [])
-        .filter(mag => mag && mag.startsWith('magnet:'))
-        .forEach((mag, i, arr) => {
-          const btn = document.createElement('a');
-          btn.className = 'download-btn';
-          btn.textContent = arr.length > 1 ? `Magnet ${i + 1}` : 'Magnet';
-          btn.href = mag;
-          btn.style.margin = '0.2em';
-          btn.addEventListener('click', e => {
-            e.stopPropagation();
-            window.open(mag, '_blank');
-          });
-          tContainer.append(btn);
-        });
-  
-      // Video embed
-      document.getElementById('mVideo').src = item.video || '';
-  
-      // Show modal
-      modal.classList.add('show');
-    }
+function openModal(item) {
+  // Banner / title / description / specs / how-to
+  document.getElementById('modalBanner').style.backgroundImage = `url(${item.img})`;
+  document.getElementById('mTitle').textContent = item.name;
+  document.getElementById('mDescription').textContent = item.description || '';
+  document.getElementById('mSpecs').innerHTML =
+    (item.specs || []).map(s => `<li>${s}</li>`).join('');
+  document.getElementById('mHowTo').innerHTML =
+    (item.howTo || []).map(step => `<li>${step}</li>`).join('');
+
+  // ----- HTTP Download Links -----
+  const dlContainer = document.getElementById('mLinksContainer');
+  dlContainer.innerHTML = '';
+  const downloads = item.download ? (Array.isArray(item.download) ? item.download : [item.download]) : [];
+  downloads.filter(Boolean).forEach((url, i, arr) => {
+    const btn = document.createElement('button');     // use button (no href)
+    btn.className = 'download-btn';
+    btn.type = 'button';
+    btn.textContent = arr.length > 1 ? `Download Part ${i + 1}` : 'Download';
+    btn.style.margin = '0.2em';
+    btn.addEventListener('click', e => {
+      e.stopPropagation();                // prevent bubbling to modal backdrop
+      // open in new tab without navigating current page
+      window.open(url, '_blank', 'noopener,noreferrer');
+    });
+    dlContainer.append(btn);
+  });
+
+  // ----- Torrent / Magnet Links -----
+  const tContainer = document.getElementById('mTorrentsContainer');
+  tContainer.innerHTML = '';
+  const magnets = item.torrents ? (Array.isArray(item.torrents) ? item.torrents : [item.torrents]) : [];
+  magnets.filter(mag => mag && mag.startsWith('magnet:')).forEach((mag, i, arr) => {
+    const btn = document.createElement('button');     // also a button
+    btn.className = 'download-btn';
+    btn.type = 'button';
+    btn.textContent = arr.length > 1 ? `Magnet ${i + 1}` : 'Magnet';
+    btn.style.margin = '0.2em';
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      window.open(mag, '_blank', 'noopener,noreferrer');
+    });
+    tContainer.append(btn);
+  });
+
+  // Video embed
+  document.getElementById('mVideo').src = item.video || '';
+
+  // Show modal
+  modal.classList.add('show');
+}
+
   
     // Initial render hooks
     document.querySelectorAll('#catalog aside input').forEach(el => el.addEventListener('input', renderGames));
