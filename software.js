@@ -62,7 +62,7 @@ const software = [
       name: 'Photoshop C6 13.0.1',
       categories: ['photoediting'],
       img: 'https://images.dwncdn.net/images/t_app-cover-s,f_auto/p/ab2e1c88-96d0-11e6-b3fe-00163ec9f5fa/3657819310/adobe-photoshop-cs6-update-screenshot',
-      download: 'https://buzzheavier.com/qfrscl78cq4w',
+      download: 'https://drive.google.com/file/d/1LyUOdb3HkbmtyX7qKu_XlMwGOeLy_q_T/view?usp=sharing',
       specs: ['OS: Windows 10/11'],
       description: '',
       howTo: ['Click the download button and download the right .7z file', '(If the game download doesnt start try using a vpn)', 'Extract the game from .7z file', 'Run the .exe'],
