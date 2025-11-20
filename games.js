@@ -3,7 +3,7 @@ const games = [
       name: 'Blur',
       categories: ['racing'],
       img: 'https://gametrex.com/wp-content/uploads/2018/12/Blur-Free-Download.jpg',
-      download: ['https://example.com/blur'],
+      download: ['https://buzzheavier.com/fzbjmo1ll4eh'],
       torrents: [ 'magnet:?xt=urn:btih:…'],
       specs: ['OS: Windows XP', 'Processor: Pentium 4', 'RAM: 512MB', 'Graphics: 64MB'],
       description: '',
