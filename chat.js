@@ -1,31 +1,162 @@
-/* chat.js */
+/* chat.js - FINAL CONSOLIDATED CODE */
 
 // --- CONFIGURATION ---
 const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1450580508156104879/Hap-BrzJ-0rJfOgdJzB1F2_YhowUVfo3HSO1s5D9tsZIeXe4lPig9nuUv4z0vP8aH5Fc'; 
 
+// --- GIPHY API KEY (REPLACE WITH YOUR KEY) ---
+// This key is used for client-side search and is safe to expose.
+const GIPHY_API_KEY = '9f7K5hb1Q9Dpz7TvxOwHglQAsyIVyTi9'; 
+
 // --- LOGIC ---
 document.addEventListener('DOMContentLoaded', () => {
-    // We wait for index.html to initialize Firebase, then this function is called
+    
+    // References to primary chat elements
+    const chatWindow = document.getElementById('chat-window');
+    const msgInput = document.getElementById('chat-input');
+    const nickInput = document.getElementById('chat-nick');
+    const sendBtn = document.getElementById('chat-send-btn');
+    
+    // References to modal elements
+    const gifModal = document.getElementById('gif-modal');
+    const gifBtn = document.getElementById('gif-btn');
+    const closeBtn = document.querySelector('.close-btn');
+    const gifSearchInput = document.getElementById('gif-search-input');
+    const gifSearchRunBtn = document.getElementById('gif-search-run-btn');
+    const gifResultsDiv = document.getElementById('gif-results');
+    
+    // Function to open/close the modal
+    function toggleGifModal(show) {
+        gifModal.style.display = show ? 'block' : 'none';
+        if (show) {
+            gifSearchInput.focus();
+            // Load trending GIFs when the modal opens
+            searchGiphyGifs();
+        }
+    }
+
+    // Modal event listeners
+    if (gifBtn) gifBtn.addEventListener('click', () => toggleGifModal(true));
+    if (closeBtn) closeBtn.addEventListener('click', () => toggleGifModal(false));
+    
+    window.addEventListener('click', (e) => {
+        if (e.target == gifModal) {
+            toggleGifModal(false);
+        }
+    });
+
+    // Search input handlers
+    if (gifSearchRunBtn) gifSearchRunBtn.addEventListener('click', () => searchGiphyGifs(gifSearchInput.value));
+    if (gifSearchInput) gifSearchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchGiphyGifs(gifSearchInput.value);
+    });
+
+
+    // CORE GIPHY SEARCH FUNCTION
+    async function searchGiphyGifs(query = 'trending') {
+        if (!GIPHY_API_KEY || GIPHY_API_KEY === 'YOUR_GIPHY_API_KEY_HERE') {
+            gifResultsDiv.innerHTML = '<p style="color:red; text-align:center;">ERROR: Please set your GIPHY_API_KEY in chat.js</p>';
+            return;
+        }
+
+        const limit = 24; 
+        let url;
+        
+        if (query === 'trending' || !query.trim()) {
+            url = `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_API_KEY}&limit=${limit}`;
+            gifResultsDiv.innerHTML = '<p style="text-align: center; color: #b9bbbe;">Loading Trending GIFs...</p>';
+        } else {
+            url = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=${limit}`;
+            gifResultsDiv.innerHTML = '<p style="text-align: center; color: #b9bbbe;">Searching...</p>';
+        }
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            gifResultsDiv.innerHTML = ''; // Clear loading message
+
+            if (data.data && data.data.length > 0) {
+                data.data.forEach(item => {
+                    const gifUrl = item.images.fixed_height_small_still.url; // Small preview image
+                    const largeGifUrl = item.images.original.url;          // Full GIF URL to use in message
+
+                    if (gifUrl) {
+                        const div = document.createElement('div');
+                        div.className = 'gif-result-item';
+                        
+                        const img = document.createElement('img');
+                        img.src = gifUrl;
+                        img.alt = item.title;
+
+                        // Click handler to insert the URL into the main chat box
+                        div.addEventListener('click', () => {
+                            const chatInput = document.getElementById('chat-input');
+                            chatInput.value = largeGifUrl; // Insert the full GIF URL
+                            toggleGifModal(false); // Close modal
+                            chatInput.focus();
+                        });
+
+                        div.appendChild(img);
+                        gifResultsDiv.appendChild(div);
+                    }
+                });
+            } else {
+                gifResultsDiv.innerHTML = '<p style="text-align: center; color: #72767d;">No GIFs found for that search term.</p>';
+            }
+
+        } catch (error) {
+            console.error('Giphy API Error:', error);
+            gifResultsDiv.innerHTML = '<p style="color:red; text-align:center;">Failed to connect to Giphy API.</p>';
+        }
+    }
+
+
+    // --- INITIALIZATION AND MESSAGE LOGIC ---
     window.initChatListeners = function() {
         console.log("Initializing Chat...");
-        const app = window.firebaseApp; // Access the app object created in index.html
+        const app = window.firebaseApp; 
         
-        // References to DOM elements
-        const chatWindow = document.getElementById('chat-window');
-        const msgInput = document.getElementById('chat-input');
-        const nickInput = document.getElementById('chat-nick');
-        const sendBtn = document.getElementById('chat-send-btn');
         const chatCollection = app.collection(app.db, "shoutbox");
-
-        // We assume the user's ID is stored on the window.firebaseApp object 
-        // during the authentication process in index.html.
         const currentUserId = app.userId; 
 
-        // 1. LISTEN FOR MESSAGES (Real-time sync with Firebase)
+        // 1. LISTENERS FOR DRAG AND DROP
+        chatWindow.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            chatWindow.style.borderColor = 'var(--accent)'; 
+        });
+
+        chatWindow.addEventListener('dragleave', (e) => {
+            e.stopPropagation();
+            chatWindow.style.borderColor = 'var(--border)'; 
+        });
+
+        chatWindow.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            chatWindow.style.borderColor = 'var(--border)';
+
+            const dataTransfer = e.dataTransfer;
+            let droppedText = '';
+
+            if (dataTransfer.getData('text/uri-list')) {
+                droppedText = dataTransfer.getData('text/uri-list');
+            } else if (dataTransfer.getData('text/plain')) {
+                droppedText = dataTransfer.getData('text/plain');
+            }
+
+            if (droppedText) {
+                msgInput.value += droppedText + ' ';
+                msgInput.focus();
+            } else if (dataTransfer.files && dataTransfer.files.length > 0) {
+                alert("Only dropping image/GIF links (URLs) from other websites is supported, not file uploads.");
+            }
+        });
+        
+        // 2. LISTEN FOR MESSAGES (Real-time sync with Firebase)
         const q = app.onSnapshot(chatCollection, (snapshot) => {
-            chatWindow.innerHTML = ''; // Clear current view
+            chatWindow.innerHTML = ''; 
             
-            // Sort messages by time (client-side sort for simplicity)
             const messages = [];
             snapshot.forEach(doc => messages.push({ id: doc.id, ...doc.data() }));
             messages.sort((a, b) => (a.timestamp?.seconds || 0) - (b.timestamp?.seconds || 0));
@@ -36,17 +167,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 div.style.fontSize = "0.9rem";
                 div.style.wordWrap = "break-word";
                 
-                // Format: [Time] Name: Message
                 const date = msg.timestamp ? new Date(msg.timestamp.seconds * 1000) : new Date();
                 const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 
-                // --- ID DISPLAY LOGIC ---
                 const displayName = escapeHtml(msg.user);
-                // Display the first 4 characters of the stored user ID
                 const displayId = msg.userId ? `(${msg.userId.substring(0, 4)})` : '';
 
-                // --- GIF/LINK RENDERING LOGIC ---
-                // Process the message text to look for links and convert them
                 const renderedText = renderMessageContent(msg.text);
                 
                 div.innerHTML = `
@@ -57,14 +183,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 chatWindow.appendChild(div);
             });
             
-            // Auto-scroll to bottom
             chatWindow.scrollTop = chatWindow.scrollHeight;
         });
 
-        // 2. SEND MESSAGE FUNCTION
+        // 3. SEND MESSAGE FUNCTION
         async function sendMessage() {
             const text = msgInput.value.trim();
-            // Use custom nickname OR fallback to "Guest"
             let user = nickInput.value.trim();
             if(!user) user = "Guest"; 
 
@@ -81,13 +205,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     timestamp: app.serverTimestamp()
                 });
 
-                // B. Send to Discord Webhook (So it saves in your private channel)
+                // B. Send to Discord Webhook 
                 if(DISCORD_WEBHOOK_URL && DISCORD_WEBHOOK_URL.startsWith('http')) {
                     fetch(DISCORD_WEBHOOK_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            // Append the ID to the username for display in Discord
                             username: `${user} (${(currentUserId || 'anon').substring(0, 4)})`, 
                             content: text,
                         })
@@ -111,45 +234,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- HELPER FUNCTIONS ---
 
-// Function to check if a string is a valid image/GIF URL
 function isImageUrl(url) {
     if (!url || typeof url !== 'string') return false;
-    // Simple check for http/https and image extensions
     return url.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i) !== null;
 }
 
-// Function to render text, converting URLs to links or images
 function renderMessageContent(text) {
     if (!text) return "";
 
-    // Regex to find a URL (starts with http or https)
     const urlRegex = /(https?:\/\/[^\s]+)/g;
-
-    // Split the text by URLs to process them separately
     const parts = text.split(urlRegex);
 
     return parts.map(part => {
         if (part.match(urlRegex)) {
-            // This is a URL
-            const cleanUrl = escapeHtml(part); // Clean the URL just in case
+            const cleanUrl = escapeHtml(part); 
             
             if (isImageUrl(part)) {
-                // If it's a GIF/Image, return an <img> tag
-                // Note: We're limiting the size inline. You may want to add CSS for this.
                 return `<img src="${cleanUrl}" style="max-width: 100%; max-height: 200px; display: block; margin-top: 5px; border-radius: 5px;" loading="lazy">`;
             } else {
-                // If it's a regular link, return an <a> tag
                 return `<a href="${cleanUrl}" target="_blank" style="color: var(--accent); text-decoration: underline;">${cleanUrl}</a>`;
             }
         } else {
-            // This is plain text, just escape it
             return escapeHtml(part);
         }
     }).join('');
 }
 
-
-// Helper to prevent HTML injection XSS attacks (Only for display name and other plain text)
 function escapeHtml(text) {
     if (!text) return "";
     return text
