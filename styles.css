@@ -482,3 +482,113 @@ html, .post-body, .post-sidebar, #chat-window, .thread-rows {
 }
 
 #chat-nick:focus, #chat-input:focus { outline: 1px solid var(--accent); }
+
+/* --- New GIF Button Styling --- */
+#gif-btn {
+    /* Style to make it fit next to the input fields */
+    padding: 0 15px; 
+    background: #6D6A6A; /* Neutral gray color */
+    color: white; 
+    border: none; 
+    cursor: pointer; 
+    border-radius: var(--radius);
+    font-weight: bold;
+    transition: background 0.2s;
+}
+#gif-btn:hover { 
+    background: #5a5858; 
+}
+
+/* --- GIF MODAL STYLING --- */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 100; /* Sit on top of everything */
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.7); /* Dim background */
+}
+
+.modal-content {
+    background-color: var(--bg-container);
+    margin: 10% auto; /* 10% from the top and centered */
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 90%; 
+    max-width: 500px;
+}
+
+.close-btn {
+    color: var(--text-muted);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close-btn:hover, .close-btn:focus {
+    color: var(--accent);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.gif-search-area {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+#gif-search-input {
+    flex-grow: 1;
+    padding: 8px;
+    background: var(--bg-body);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    border-radius: var(--radius);
+}
+#gif-search-run-btn {
+    padding: 8px 15px;
+    background: var(--accent);
+    border: none;
+    color: white;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#gif-search-run-btn:hover {
+    background: var(--accent-hover);
+}
+
+/* GIF Results Grid */
+#gif-results {
+    display: grid;
+    /* Creates a responsive grid with minimum column size of 100px */
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+    gap: 10px;
+    max-height: 400px; /* Limits the height of the results area */
+    overflow-y: auto;
+    padding: 5px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+.gif-result-item {
+    cursor: pointer;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+    padding-top: 100%; /* Creates a square container */
+    background: #444; /* Placeholder background */
+}
+.gif-result-item img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image fills the square without stretching */
+    transition: transform 0.1s;
+}
+.gif-result-item:hover img {
+    transform: scale(1.05); /* Zoom effect on hover */
+}
