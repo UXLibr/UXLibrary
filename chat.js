@@ -1,4 +1,4 @@
-/* chat.js - FINAL CONSOLIDATED CODE */
+/* chat.js - FINAL CONSOLIDATED CODE*/
 
 // --- CONFIGURATION ---
 const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1450580508156104879/Hap-BrzJ-0rJfOgdJzB1F2_YhowUVfo3HSO1s5D9tsZIeXe4lPig9nuUv4z0vP8aH5Fc'; 
