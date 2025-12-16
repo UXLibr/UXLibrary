@@ -66,17 +66,6 @@ const games = [
       video: ''
     },
     {
-      name: 'NEED FOR SPEED II SE',
-      categories: ['racing'],
-      img: 'https://m.media-amazon.com/images/I/51JSKFD7R9L._AC_SY200_QL15_.jpg',
-      download: ['https://buzzheavier.com/37sn8sme4lao'],
-      torrents: [ ''],
-      specs: ['OS: Windows XP', 'Processor: Intel Core 2 Duo 2.4 GHz', 'RAM: 1GB', 'Graphics: 512MB'],
-      description: '',
-      howTo: ['Click the download button and download the right .7z file', '(If the game download doesnt start try using a vpn)', 'Extract the game from .7z file', 'Run the game .exe'],
-      video: ''
-    },
-    {
       name: 'NEED FOR SPEED MOST WANTED',
       categories: ['racing'],
       img: 'https://upload.wikimedia.org/wikipedia/en/8/8e/Need_for_Speed_Most_Wanted_Box_Art.jpg',
@@ -131,17 +120,17 @@ const games = [
       howTo: ['Click the download button and download the right .7z file', '(If the game download doesnt start try using a vpn)', 'Extract the game from .7z file', 'Run the game .exe'],
       video: ''
     },
-    {
-      name: 'NEED FOR SPEED HOT PURSUIT',
-      categories: ['racing'],
-      img: 'https://preview.redd.it/in-your-opinion-what-are-the-pros-and-cons-of-need-for-v0-xntxwfc3f4fd1.jpeg?auto=webp&s=1d2e0a7b19024b28c7631ccb94c83e5a9636c126',
-      download: ['https://buzzheavier.com/pmn3bx5kcvvw'],
-      torrents: [ ''],
-      specs: ['OS: Windows 7', 'Processor: Intel Core 2 Duo', 'RAM: 4GB', 'Graphics: ATI Radeon 4870 or higher'],
-      description: '',
-      howTo: ['Click the download button and download the right .7z file', '(If the game download doesnt start try using a vpn)', 'Extract the game from .7z file', 'Run the game .exe'],
-      video: ''
-    },
+//    {
+    //  name: 'NEED FOR SPEED HOT PURSUIT',
+   //   categories: ['racing'],
+   //   img: 'https://preview.redd.it/in-your-opinion-what-are-the-pros-and-cons-of-need-for-v0-xntxwfc3f4fd1.jpeg?auto=webp&s=1d2e0a7b19024b28c7631ccb94c83e5a9636c126',
+   //   download: ['https://buzzheavier.com/pmn3bx5kcvvw'],
+    //  torrents: [ ''],
+    //  specs: ['OS: Windows 7', 'Processor: Intel Core 2 Duo', 'RAM: 4GB', 'Graphics: ATI Radeon 4870 or higher'],
+     // description: '',
+   //   howTo: ['Click the download button and download the right .7z file', '(If the game download doesnt start try using a vpn)', 'Extract the game from .7z file', 'Run the game .exe'],
+    //  video: ''
+//    },
     {
       name: 'DRIVER SAN FRANCISCO',
       categories: ['racing'],
