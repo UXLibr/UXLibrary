@@ -226,9 +226,28 @@ const firebaseConfig = {
           <div class="system-message">Connecting to channel...</div>
         </div>
 <div id="chat-input-area">
-  <input type="text" id="chat-nick" placeholder="Name" maxlength="12">
+  <input type="text" id="chat-nick" placeholder="Name" maxlength="15">
   <input type="text" id="chat-input" placeholder="Post a shout...">
+  
+  <button id="gif-btn" title="Search GIFs">GIF</button> 
+  
   <button id="chat-send-btn">Post</button>
+</div>
+
+
+<div id="gif-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3>Giphy GIF Search</h3>
+        <div class="gif-search-area">
+            <input type="text" id="gif-search-input" placeholder="Search for a GIF...">
+            <button id="gif-search-run-btn">Search</button>
+        </div>
+        <div id="gif-results">
+            <p style="text-align: center; color: #b9bbbe;">Search for something fun!</p>
+        </div>
+        <p style="font-size: 0.7rem; color: #72767d; margin-top: 10px;">Powered by Giphy</p>
+    </div>
 </div>
       </section>
 
