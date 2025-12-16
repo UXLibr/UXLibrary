@@ -1,4 +1,4 @@
-/* --- UX Library Red/Dark Palette --- */
+/* --- UX Library Red/DarkPalette --- */
 :root {
     /* Core Colors from Original Design */
     --bg-body: #36393f;       /* Main background */
@@ -592,3 +592,4 @@ html, .post-body, .post-sidebar, #chat-window, .thread-rows {
 .gif-result-item:hover img {
     transform: scale(1.05); /* Zoom effect on hover */
 }
+
