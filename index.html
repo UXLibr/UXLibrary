@@ -3,202 +3,434 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>UX Library v1.0</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Montserrat:wght@500&display=swap" rel="stylesheet">
+  <title>UX Library - Forum Index</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    setLogLevel('Debug');
+    
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+const firebaseConfig = {
+  apiKey: "AIzaSyB5NEwfOv4RVpBk_H0oOxQjDdw9KkUpIuo",
+  authDomain: "chat-f456b.firebaseapp.com",
+  projectId: "chat-f456b",
+  storageBucket: "chat-f456b.firebasestorage.app",
+  messagingSenderId: "885802192638",
+  appId: "1:885802192638:web:3d8a35d863d3d4a36cdfaf",
+  measurementId: "G-F8YXSZXPTH"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    
+    let userId = null;
+    let userName = null;
+    let isAuthReady = false;
+
+    async function initAuth() {
+        try {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+        } catch (error) {
+            console.error("Firebase Auth Error:", error);
+            try { await signInAnonymously(auth); } catch (e) { console.error("Anonymous Sign-in Failed:", e); }
+        }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            userId = user.uid;
+            userName = "Member-" + userId.substring(0, 5); 
+        } else {
+             userId = crypto.randomUUID(); 
+             userName = "Guest-" + userId.substring(0, 5);
+        }
+        isAuthReady = true;
+        
+        // Update User info in the sidebar
+        const userDisplay = document.getElementById('user-id-display');
+        if(userDisplay) userDisplay.textContent = userName;
+
+        window.firebaseApp = { db, auth, userId, userName, isAuthReady, collection, onSnapshot, addDoc, serverTimestamp, appId };
+        
+        if (typeof window.initChatListeners === 'function') {
+             window.initChatListeners();
+        }
+    });
+
+    initAuth();
+  </script>
 </head>
 <body>
+  
   <header>
-    <h1><a href="https://discord.gg/AmBBE4PT8u"><img src="https://i.ibb.co/n2xbvwb/UXLibrary-cropped.jpg" alt="Udiscord" width="70" height="70" style="vertical-align: middle;"></a> UX Library</h1>
-    <nav>
-      <button data-tab="home" class="active">Home</button>
-      <button data-tab="catalog">Games</button>
-      <button data-tab="software">Software</button>
-      <a href="https://discord.gg/AmBBE4PT8u" target="_blank">Discord</a>
-    </nav>
+    <div class="logo-area">
+        <img src="https://i.ibb.co/n2xbvwb/UXLibrary-cropped.jpg" alt="Logo">
+        <div class="site-title">
+            <h1>UX Library Forums</h1>
+            <span class="breadcrumb">Home > Index</span>
+        </div>
+    </div>
+    <div class="user-panel">
+        <span id="user-id-display">Guest</span>
+        <a href="https://discord.gg/AmBBE4PT8u" target="_blank" class="discord-btn">Join Discord</a>
+    </div>
   </header>
+
   <div class="container">
+    
+    <aside class="forum-sidebar">
+        <div class="sidebar-block">
+            <h3>Welcome</h3>
+            <div class="sidebar-content">
+                <p>Welcome to the UX Library archives.</p>
+                <hr>
+                <p><strong>Unnecessary Fact:</strong> The icon is from Xpand Rally.</p>
+            </div>
+        </div>
+
+        <div id="filter-sidebar" class="sidebar-block hidden">
+            <h3>Filters</h3>
+            <div class="sidebar-content" id="dynamic-filters">
+                </div>
+        </div>
+    </aside>
+
     <main>
       <section id="home" class="section active">
-        <h1>Welcome to UX Library!</h1>
-        <hr><br> > This site is run by 2 people so dont expect daily updates!
-        <br> > So we would love it if you joined the discord server! 
-        <br><br> > Join the Discord server to request a game / software to be added! 
-        <br><br> > All of the content here has been gotten from good sources so don't worry about getting infected! 
-        <br> > If there is an option to download a specific content using torrent we suggest you to do so as its the fastest way to do so on this site.
-        <br> <br>
-        <img src="https://i.ibb.co/rDFTczW/b2b-692540511.png" alt="Hustler" width="100" height="100">
-        <br> > Uneccessary Fact: <br>- The icon of the our discord server and our website is the car from the Xpand Rally game boxart.
+        
+        <div class="category-block">
+            <div class="category-header">
+                <span class="cat-title">General Information</span>
+            </div>
+            <div class="forum-row">
+                <div class="forum-icon">📢</div>
+                <div class="forum-info">
+                    <h4><a href="#">Announcements & Rules</a></h4>
+                    <p>Please read this before downloading. Updates and Discord links.</p>
+                </div>
+                <div class="forum-stats">
+                    <span>1 Threads</span><br><span>1 Posts</span>
+                </div>
+            </div>
+            <div class="forum-row" data-tab="chat">
+                <div class="forum-icon">💬</div>
+                <div class="forum-info">
+                    <h4><a href="#" onclick="switchTab('chat'); return false;">The Shoutbox (Live Chat)</a></h4>
+                    <p>Talk with other users in real-time. Public chat.</p>
+                </div>
+                <div class="forum-stats">
+                    <span>Live</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-block">
+            <div class="category-header">
+                <span class="cat-title">Downloads Center</span>
+            </div>
+            
+            <div class="forum-row" data-tab="catalog">
+                <div class="forum-icon">🎮</div>
+                <div class="forum-info">
+                    <h4><a href="#" onclick="switchTab('catalog'); return false;">PC Games Library</a></h4>
+                    <p>Racing, Shooters, Horror, and Strategy games. Torrent and Direct links.</p>
+                </div>
+                <div class="forum-stats">
+                    <span id="game-count">Loading...</span> Threads
+                </div>
+                <div class="forum-last-post">
+                    <span>Latest: Various</span>
+                </div>
+            </div>
+
+            <div class="forum-row" data-tab="software">
+                <div class="forum-icon">💾</div>
+                <div class="forum-info">
+                    <h4><a href="#" onclick="switchTab('software'); return false;">Software & Tools</a></h4>
+                    <p>Video editing, Audio tools, and Windows activators.</p>
+                </div>
+                <div class="forum-stats">
+                    <span id="soft-count">Loading...</span> Threads
+                </div>
+                 <div class="forum-last-post">
+                    <span>Latest: Tools</span>
+                </div>
+            </div>
+        </div>
 
       </section>
+      
       <section id="catalog" class="section">
-        <div class="catalog">
-          <aside>
-            <h3>Categories</h3>
-            <hr>
-            <br>
-            <label><input type="checkbox" value="racing" checked> Racing</label>
-            <label><input type="checkbox" value="shooter" checked> Shooter</label>
-            <label><input type="checkbox" value="action" checked> Action</label>
-            <label><input type="checkbox" value="adventure" checked> Adventure</label>
-            <label><input type="checkbox" value="simulator" checked> Simulator</label>
-            <label><input type="checkbox" value="puzzle" checked> Puzzle</label>
-            <label><input type="checkbox" value="rpg" checked> RPG</label>
-            <label><input type="checkbox" value="horror" checked> Horror</label>
-            <label><input type="checkbox" value="strategy" checked> Strategy</label>
-            <label><input type="checkbox" value="survival" checked> Survival</label>
-            <label><input type="checkbox" value="sandbox" checked> Sandbox</label>
-            <label><input type="checkbox" value="platformer" checked> Platformer</label>
-            <label><input type="checkbox" value="roleplay" checked> Roleplay</label>
-          </aside>
-          <div class="content">
-            <div class="search-box"><input id="search-games" placeholder="Search games..."></div>
-            <div class="game-list"></div>
-          </div>
+        <div class="board-header">
+            <h2>🎮 PC Games Library</h2>
+            <button onclick="switchTab('home')" class="back-btn">← Back to Index</button>
+        </div>
+        
+        <div class="toolbar">
+            <input id="search-games" placeholder="Search threads..." class="forum-search">
+        </div>
+
+        <div class="thread-list-container">
+            <div class="thread-header-row">
+                <div class="th-icon"></div>
+                <div class="th-main">Thread / Starter</div>
+                <div class="th-stats">Category</div>
+                <div class="th-last">Downloads</div>
+            </div>
+            <div id="game-list" class="thread-rows">
+                </div>
         </div>
       </section>
+
       <section id="software" class="section">
-        <div class="software-section">
-          <aside>
-            <h3>Categories</h3>
-                        <hr>
-                        <br>
-            <label><input type="checkbox" value="videoediting" checked> Video Editing</label>
-            <label><input type="checkbox" value="photoediting" checked> Photo Editing</label>
-            <label><input type="checkbox" value="audioediting" checked> Audio Editing</label>
-            <label><input type="checkbox" value="windows" checked> Windows</label>
-            <label><input type="checkbox" value="other" checked> Other</label>
-          </aside>
-          <div class="content">
-            <div class="search-box"><input id="search-software" placeholder="Search software..."></div>
-            <div class="software-list"></div>
-          </div>
+        <div class="board-header">
+            <h2>💾 Software & Tools</h2>
+             <button onclick="switchTab('home')" class="back-btn">← Back to Index</button>
+        </div>
+        
+        <div class="toolbar">
+            <input id="search-software" placeholder="Search threads..." class="forum-search">
+        </div>
+
+        <div class="thread-list-container">
+             <div class="thread-header-row">
+                <div class="th-icon"></div>
+                <div class="th-main">Thread / Starter</div>
+                <div class="th-stats">Category</div>
+                <div class="th-last">Downloads</div>
+            </div>
+            <div id="software-list" class="thread-rows">
+                </div>
         </div>
       </section>
+      
+      <section id="chat" class="section">
+        <div class="board-header">
+            <h2>💬 Live Shoutbox</h2>
+             <button onclick="switchTab('home')" class="back-btn">← Back to Index</button>
+        </div>
+        <div id="user-info-bar">
+          <p>Logged in as: <strong id="current-username">...</strong></p>
+        </div>
+        <div id="chat-window">
+          <div class="system-message">Connecting to channel...</div>
+        </div>
+<div id="chat-input-area">
+  <input type="text" id="chat-nick" placeholder="Name" maxlength="12">
+  <input type="text" id="chat-input" placeholder="Post a shout...">
+  <button id="chat-send-btn">Post</button>
+</div>
+      </section>
+
     </main>
   </div>
 
   <div class="modal" id="modal">
     <div class="modal-content">
-      <div id="modalBanner" class="modal-banner"></div>
-      <span class="close" id="modalClose">×</span>
-      <div class="modal-body">
-        <h2 id="mTitle"></h2>
-        <p id="mDescription"></p>
-        <h3>Minimum Specs</h3>
-        <ul id="mSpecs"></ul>
-        <h3>How to Download</h3>
-        <ol id="mHowTo"></ol>
-        <h3>Download</h3>
-        <div id="mLinksContainer"></div>
-        <h3>Torrents</h3>
-        <div id="mTorrentsContainer"></div>
-        <script>
-        // <h3 style="margin-top:1rem;"><br></h3> add this back if you want to add text above the vid or smt
-      </script>
-        <iframe id="mVideo" src="" allowfullscreen></iframe>
+      <div class="modal-header-bar">
+        <span id="mTitle">Thread Title</span>
+        <span class="close" id="modalClose">×</span>
+      </div>
+      
+      <div class="post-layout">
+          <div class="post-sidebar">
+            <img id="mImage" src="" alt="Cover">
+            <div class="author-name">System Admin</div>
+            <div class="author-role">Administrator</div>
+          </div>
+
+          <div class="post-body">
+            <div class="post-timestamp">Posted: Just now</div>
+            <hr>
+            <p id="mDescription" class="post-text"></p>
+            
+            <div class="code-block">
+                <strong>System Requirements:</strong>
+                <ul id="mSpecs"></ul>
+            </div>
+
+            <div class="quote-block">
+                <strong>Installation Guide:</strong>
+                <ol id="mHowTo"></ol>
+            </div>
+
+            <div class="download-section">
+                <h4>Attachments / Links</h4>
+                <div id="mLinksContainer"></div>
+                <div id="mTorrentsContainer"></div>
+            </div>
+
+            <div id="video-container">
+                <iframe id="mVideo" src="" allowfullscreen></iframe>
+            </div>
+          </div>
       </div>
     </div>
   </div>
 
+  <script src="games.js"></script>
+  <script src="software.js"></script>
+  <script src="chat.js"></script>
+
   <script>
-    function renderList(list, data, searchSelector, filterCats, isGame) {
-      list.innerHTML = '';
+    // --- Navigation Logic ---
+    function switchTab(tabId) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        
+        // Handle Sidebar Filters visibility
+        const filterSidebar = document.getElementById('filter-sidebar');
+        const filterContainer = document.getElementById('dynamic-filters');
+        
+        filterContainer.innerHTML = ''; // Clear previous
+        
+        if (tabId === 'catalog') {
+            filterSidebar.classList.remove('hidden');
+            generateFilters(['racing','shooter','action','adventure','simulator','puzzle','rpg','horror','strategy','survival','sandbox','platformer','roleplay'], 'catalog');
+        } else if (tabId === 'software') {
+            filterSidebar.classList.remove('hidden');
+            generateFilters(['videoediting','photoediting','audioediting','windows','other'], 'software');
+        } else {
+            filterSidebar.classList.add('hidden');
+        }
+    }
+
+    function generateFilters(categories, type) {
+        const container = document.getElementById('dynamic-filters');
+        categories.forEach(cat => {
+            const label = document.createElement('label');
+            label.innerHTML = `<input type="checkbox" value="${cat}" checked> ${cat.charAt(0).toUpperCase() + cat.slice(1)}`;
+            label.querySelector('input').addEventListener('change', () => {
+                 if(type === 'catalog') renderGames();
+                 else renderSoftware();
+            });
+            container.appendChild(label);
+        });
+    }
+
+    // --- Rendering "Forum Threads" ---
+    function renderList(container, data, searchSelector, filterSelector, isGame) {
+      container.innerHTML = '';
       const q = document.querySelector(searchSelector).value.toLowerCase();
+      
+      // Get checked boxes dynamically
+      const checkboxes = document.querySelectorAll(`#dynamic-filters input:checked`);
+      const checkedCats = Array.from(checkboxes).map(cb => cb.value);
+
       data.filter(item => {
-        const matchCats = filterCats.length === 0
-          || item.categories?.some(c => filterCats.includes(c));
+        // If we are on home page, checkboxes might not exist yet, so default to show all if array is empty
+        const matchCats = checkedCats.length === 0 
+          || (item.categories && item.categories.some(c => checkedCats.includes(c)));
         return matchCats && item.name.toLowerCase().includes(q);
       }).forEach(item => {
-        const div = document.createElement('div');
-        div.className = isGame ? 'game-item' : 'software-item';
-        div.innerHTML = `
-          <img src="${item.img}" alt="${item.name}">
-          <div class="title">${item.name}</div>
+        
+        const row = document.createElement('div');
+        row.className = 'thread-row';
+        row.onclick = () => openModal(item);
+
+        const iconType = isGame ? '🎮' : '💾';
+        const catLabel = item.categories ? item.categories[0] : 'General';
+        
+        row.innerHTML = `
+            <div class="td-icon">${iconType}</div>
+            <div class="td-main">
+                <div class="thread-title">${item.name}</div>
+                <div class="thread-sub">Started by Admin</div>
+            </div>
+            <div class="td-stats">${catLabel}</div>
+            <div class="td-last">Click to View</div>
         `;
-        div.onclick = () => openModal(item);
-        list.append(div);
+        container.append(row);
       });
     }
-  
-    // Tab navigation
-    document.querySelectorAll('nav button').forEach(btn =>
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.querySelectorAll('.section').forEach(s =>
-          s.classList.toggle('active', s.id === btn.dataset.tab)
-        );
-      })
-    );
-  
-    // Modal open/close
+
+    // Wrappers
+    function renderGames() {
+        if(typeof games !== 'undefined') {
+            renderList(document.getElementById('game-list'), games, '#search-games', null, true);
+            document.getElementById('game-count').innerText = games.length;
+        }
+    }
+    
+    function renderSoftware() {
+        if(typeof software !== 'undefined') {
+            renderList(document.getElementById('software-list'), software, '#search-software', null, false);
+            document.getElementById('soft-count').innerText = software.length;
+        }
+    }
+
+    // --- Modal Logic (Forum Post Style) ---
     const modal = document.getElementById('modal');
     document.getElementById('modalClose').onclick = () => modal.classList.remove('show');
     modal.onclick = e => e.target === modal && modal.classList.remove('show');
-  
-function openModal(item) {
-  // Banner / title / description / specs / how-to
-  document.getElementById('modalBanner').style.backgroundImage = `url(${item.img})`;
-  document.getElementById('mTitle').textContent = item.name;
-  document.getElementById('mDescription').textContent = item.description || '';
-  document.getElementById('mSpecs').innerHTML =
-    (item.specs || []).map(s => `<li>${s}</li>`).join('');
-  document.getElementById('mHowTo').innerHTML =
-    (item.howTo || []).map(step => `<li>${step}</li>`).join('');
 
-  // ----- HTTP Download Links -----
-  const dlContainer = document.getElementById('mLinksContainer');
-  dlContainer.innerHTML = '';
-  const downloads = item.download ? (Array.isArray(item.download) ? item.download : [item.download]) : [];
-  downloads.filter(Boolean).forEach((url, i, arr) => {
-    const btn = document.createElement('button');     // use button (no href)
-    btn.className = 'download-btn';
-    btn.type = 'button';
-    btn.textContent = arr.length > 1 ? `Download Part ${i + 1}` : 'Download';
-    btn.style.margin = '0.2em';
-    btn.addEventListener('click', e => {
-      e.stopPropagation();                // prevent bubbling to modal backdrop
-      // open in new tab without navigating current page
-      window.open(url, '_blank', 'noopener,noreferrer');
-    });
-    dlContainer.append(btn);
-  });
+    function openModal(item) {
+        document.getElementById('mTitle').textContent = item.name; // Subject line
+        document.getElementById('mImage').src = item.img; // Avatar/Image
+        document.getElementById('mDescription').textContent = item.description || 'No description provided.';
+        
+        // Specs
+        const specsList = document.getElementById('mSpecs');
+        specsList.innerHTML = (item.specs || []).map(s => `<li>${s}</li>`).join('');
+        
+        // How To
+        const howToList = document.getElementById('mHowTo');
+        howToList.innerHTML = (item.howTo || []).map(s => `<li>${s}</li>`).join('');
 
-  // ----- Torrent / Magnet Links -----
-  const tContainer = document.getElementById('mTorrentsContainer');
-  tContainer.innerHTML = '';
-  const magnets = item.torrents ? (Array.isArray(item.torrents) ? item.torrents : [item.torrents]) : [];
-  magnets.filter(mag => mag && mag.startsWith('magnet:')).forEach((mag, i, arr) => {
-    const btn = document.createElement('button');     // also a button
-    btn.className = 'download-btn';
-    btn.type = 'button';
-    btn.textContent = arr.length > 1 ? `Magnet ${i + 1}` : 'Magnet';
-    btn.style.margin = '0.2em';
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      window.open(mag, '_blank', 'noopener,noreferrer');
-    });
-    tContainer.append(btn);
-  });
+        // Downloads
+        const dlContainer = document.getElementById('mLinksContainer');
+        dlContainer.innerHTML = '';
+        const downloads = item.download ? (Array.isArray(item.download) ? item.download : [item.download]) : [];
+        downloads.forEach((url, i) => {
+            const a = document.createElement('a');
+            a.className = 'att-link';
+            a.href = url;
+            a.target = '_blank';
+            a.innerHTML = `⬇️ HTTP Download [Part ${i+1}]`;
+            dlContainer.appendChild(a);
+        });
 
-  // Video embed
-  document.getElementById('mVideo').src = item.video || '';
+        const tContainer = document.getElementById('mTorrentsContainer');
+        tContainer.innerHTML = '';
+        const magnets = item.torrents ? (Array.isArray(item.torrents) ? item.torrents : [item.torrents]) : [];
+        magnets.filter(m=>m).forEach((mag, i) => {
+            const a = document.createElement('a');
+            a.className = 'att-link magnet';
+            a.href = mag;
+            a.innerHTML = `🧲 Magnet Link [${i+1}]`;
+            tContainer.appendChild(a);
+        });
 
-  // Show modal
-  modal.classList.add('show');
-}
+        // Video
+        const vFrame = document.getElementById('mVideo');
+        if(item.video) {
+            vFrame.style.display = 'block';
+            vFrame.src = item.video;
+        } else {
+            vFrame.style.display = 'none';
+        }
 
-  
-    // Initial render hooks
-    document.querySelectorAll('#catalog aside input').forEach(el => el.addEventListener('input', renderGames));
+        modal.classList.add('show');
+    }
+
+    // Listeners
     document.getElementById('search-games').addEventListener('input', renderGames);
+    document.getElementById('search-software').addEventListener('input', renderSoftware);
+    
+    // Init
     renderGames();
+    renderSoftware();
+
   </script>
-  
-  
-  
-  <script src="games.js"></script>
-  <script src="software.js"></script>
 </body>
 </html>
