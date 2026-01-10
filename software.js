@@ -6,7 +6,17 @@ const software = [
       download: 'https://buzzheavier.com/c5xtv20gn8q9',
       specs: ['OS: Windows 10', 'RAM: 1GB', 'Graphics: HD Graphics 4000 +'],
       description: 'Cracked Version of Wallpaper Engine',
-      howTo: ['Click the download button and download the right .7z file', '(If the game download doesnt start try using a vpn)', 'Extract the game from .7z file', 'Run the .exe'],
+      howTo: ['Click the download button and download the right .7z file', '(If the game download doesnt start try using a vpn)', 'Extract the software from .7z file', 'Run the .exe'],
+      video: ''
+    },
+            {
+      name: 'Vegas 23.0',
+      categories: ['videoediting'],
+      img: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.jagatreview.com%2Fwp-content%2Fuploads%2F2025%2F09%2Fvegas-pro-23-new.webp&f=1&nofb=1&ipt=e29967f15ece55fb283ec8986a4af07a1094b2f01d8964122f57b7ee8e44a6cf',
+      download: 'https://buzzheavier.com/weylaa5li7nl',
+      specs: ['OS: Windows 10', 'RAM: 4GB', 'Graphics: HD Graphics 4000 +'],
+      description: '',
+      howTo: ['Click the download button and download the right .7z file', '(If the game download doesnt start try using a vpn)', 'Extract the software from .7z file', 'Run the .exe'],
       video: ''
     },
         {
@@ -16,7 +26,7 @@ const software = [
       download: 'https://buzzheavier.com/b4fglnejtir4',
       specs: ['OS: Windows 10', 'RAM: 4GB', 'Graphics: HD Graphics 4000 +'],
       description: '',
-      howTo: ['Click the download button and download the right .7z file', '(If the game download doesnt start try using a vpn)', 'Extract the game from .7z file', 'Run the .exe'],
+      howTo: ['Click the download button and download the right .7z file', '(If the game download doesnt start try using a vpn)', 'Extract the software from .7z file', 'Run the .exe'],
       video: ''
     },
             {
@@ -36,7 +46,7 @@ const software = [
       download: 'https://buzzheavier.com/8nb263r8gwwi',
       specs: ['OS: Windows 10', 'RAM: 4GB', 'Graphics: HD Graphics 4000 +'],
       description: '',
-      howTo: ['Click the download button and download the right .7z file', '(If the game download doesnt start try using a vpn)', 'Extract the game from .7z file', 'Run the .exe'],
+      howTo: ['Click the download button and download the right .7z file', '(If the game download doesnt start try using a vpn)', 'Extract the software from .7z file', 'Run the .exe'],
       video: ''
     },
                 {
@@ -65,7 +75,7 @@ const software = [
       download: 'https://drive.google.com/file/d/1LyUOdb3HkbmtyX7qKu_XlMwGOeLy_q_T/view?usp=sharing',
       specs: ['OS: Windows 10/11'],
       description: '',
-      howTo: ['Click the download button and download the right .7z file', '(If the game download doesnt start try using a vpn)', 'Extract the game from .7z file', 'Run the .exe'],
+      howTo: ['Click the download button and download the right .7z file', '(If the game download doesnt start try using a vpn)', 'Extract the software from .7z file', 'Run the .exe'],
       video: ''
     },
     // Add more software here
@@ -80,3 +90,4 @@ const software = [
   document.getElementById('search-software').addEventListener('input', renderSoftware);
   renderSoftware();
   
+
