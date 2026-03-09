@@ -283,7 +283,7 @@ main { flex: 1; }
 .modal.show { display: flex; }
 
 .modal-content {
-    width: 900px;
+    width: 80%;
     max-width: 95%;
     background: var(--modal-bg);
     border: 1px solid var(--border);
@@ -339,6 +339,7 @@ main { flex: 1; }
 }
 
 .post-body {
+    width: 80%;
     flex: 1;
     padding: 25px;
     overflow-y: auto;
@@ -593,3 +594,41 @@ html, .post-body, .post-sidebar, #chat-window, .thread-rows {
     transform: scale(1.05); /* Zoom effect on hover */
 }
 
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: #b9bbbe;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.tab-btn.active {
+    color: #fff;
+    border-bottom: 2px solid #7289da; /* Discord blue color */
+}
+
+.gif-item:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s;
+    outline: 2px solid #7289da;
+}
+/* Discord Markdown Styling */
+.post-content h1 { font-size: 1.6rem; border-bottom: 1px solid #444; padding-bottom: 5px; margin: 15px 0 10px; }
+.post-content h2 { font-size: 1.3rem; margin: 12px 0 8px; }
+.post-content h3 { font-size: 1.1rem; margin: 10px 0 5px; }
+.post-content blockquote { 
+    border-left: 4px solid #4f545c; 
+    padding-left: 10px; 
+    margin: 10px 0; 
+    color: #b9bbbe; 
+}
+.post-content pre {
+    background: #2b2d31;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: monospace;
+    overflow-x: auto;
+    margin: 10px 0;
+}
