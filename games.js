@@ -577,13 +577,5 @@ const games = [
      video: ''
    },
   ];
-  
-  function renderGames() {
-    const gameCats = Array.from(document.querySelectorAll('#catalog aside input:checked')).map(cb => cb.value);
-    renderList(document.querySelector('.game-list'), games, '#search-games', gameCats, true);
-  }
-  
-  document.querySelectorAll('#catalog aside input').forEach(el => el.addEventListener('input', renderGames));
-  document.getElementById('search-games').addEventListener('input', renderGames);
-  renderGames();
+
   
